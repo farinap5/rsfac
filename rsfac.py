@@ -62,7 +62,7 @@ def help():
     Reverse Shell Factory
     v.1
     
-    Usage Mathod:
+    Usage Method:
     python3 rsfac.py <args>
     
     Example:
