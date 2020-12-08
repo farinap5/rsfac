@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+# by farinap5 <3
 import sys
 
 def pay(host,port,load):
