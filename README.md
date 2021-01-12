@@ -5,6 +5,8 @@
    <img src="https://img.shields.io/badge/language-python-blue.svg">
 </p>
 
+<p align="center">Tell me if you find any errors. :)</p>
+
 ***
 
 ## Help Menu
