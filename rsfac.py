@@ -112,4 +112,4 @@ except:
 try:
     pay(host,port,load)
 except:
-    print("Syntax Error")
+    print("Syntax Error. Type: help")
