@@ -8,6 +8,7 @@
 ***
 
 ## Help Menu
+
 ```
 REVERSE SHELL FACTORY 2.0
 
@@ -19,9 +20,12 @@ COMMANDS DESCRIPTION
 -p       Payload.
 -os      Operating system.
 -v       Version of the payload
+-e       Encode.
+-de      Double encoding.
 
 LIST OF PAYLOADS
 ---- -- --------
+-p <options>
 bash
     default - Normal payload.
     tiny    - To put inside of bash files.
@@ -72,6 +76,14 @@ ryby
         default - Normal payload.
     windows
         default - Normal payload.
+
+ENCODING OPTIONS
+-------- -------
+-e <option>
+-de <second encoding>
+base64   - Normal Base64 encoding.
+urle     - URL Encoding.
+ifs      - Replace all spaces to Internal Field Separator.
 ```
 ## Usage Example
 
